@@ -1,0 +1,11 @@
+# Protección estricta del directorio de copias de seguridad de la base de datos
+# Ningún archivo .sql puede descargarse por URL directa; solo mediante AdminController validando rol Superadmin
+Options -Indexes -ExecCGI
+
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>

@@ -1,0 +1,36 @@
+# Seguridad Web Institucional — Sistema de Atención y Soporte Técnico
+# Desactivar listado de directorios en todo el proyecto
+Options -Indexes
+DirectoryIndex index.php
+
+# Proteger archivos ocultos (.htaccess, .env, .git) y archivos sensibles (AGENT.md, .sql, .log, .ini, .bak)
+<FilesMatch "(^\.|^AGENT\.md$|\.(md|sql|log|ini|env|bak|sh|yml|yaml|lock)$)">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Bloquear acceso directo vía navegador a carpetas internas de arquitectura MVC y base de datos
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Impedir acceso directo a carpetas internas: config, models, controllers, views y database
+    RewriteRule ^(config|models|controllers|views|database)(/|$) - [F,L,NC]
+
+    # Impedir ejecución directa de cualquier archivo .php que no sea index.php en la raíz
+    RewriteCond %{REQUEST_URI} \.php$ [NC]
+    RewriteCond %{REQUEST_FILENAME} !/index\.php$ [NC]
+    RewriteRule ^ - [F,L]
+</IfModule>
+
+# Cabeceras de seguridad adicionales para recursos estáticos (si mod_headers está activo)
+<IfModule mod_headers.c>
+    Header setIfEmpty X-Frame-Options "SAMEORIGIN"
+    Header setIfEmpty X-Content-Type-Options "nosniff"
+    Header setIfEmpty Referrer-Policy "strict-origin-when-cross-origin"
+    Header setIfEmpty X-Permitted-Cross-Domain-Policies "none"
+</IfModule>

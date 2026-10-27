@@ -18,8 +18,8 @@ DirectoryIndex index.php
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Impedir acceso directo a carpetas internas: config, models, controllers, views y database
-    RewriteRule ^(config|models|controllers|views|database)(/|$) - [F,L,NC]
+    # Impedir acceso directo a carpetas internas (.git, config, models, controllers, views y database)
+    RewriteRule ^(\.git|config|models|controllers|views|database)(/|$) - [F,L,NC]
 
     # Impedir ejecución directa de cualquier archivo .php que no sea index.php en la raíz
     RewriteCond %{REQUEST_URI} \.php$ [NC]
